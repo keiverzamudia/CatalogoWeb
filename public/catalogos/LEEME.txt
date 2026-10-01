@@ -1,0 +1,2 @@
+﻿@ Los PDF oficiales van en esta carpeta.
+# Los nombres deben coincidir con CATALOGOS_OFICIALES en src/config/catalog.config.ts

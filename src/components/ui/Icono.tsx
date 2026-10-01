@@ -18,6 +18,7 @@ export type NombreIcono =
   | 'chevron-left'
   | 'chevron-right'
   | 'flecha-arriba'
+  | 'pdf'
   | 'check';
 
 interface Props {
@@ -89,6 +90,13 @@ const PATHS: Record<NombreIcono, React.ReactNode> = {
   'chevron-left': <path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />,
   'chevron-right': <path fill="currentColor" d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />,
   'flecha-arriba': <path fill="currentColor" d="M12 4 5.6 10.4 7 11.8l4-4V20h2V7.8l4 4 1.4-1.4z" />,
+  /* Documento con marca de plegado: identifica los catalogos en PDF. */
+  pdf: (
+    <path
+      fill="currentColor"
+      d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm-1 7V3.5L18.5 9zM8.5 13.5h1.2v1.1H8.5v2.4H7.2v-6h2.6v1.1H8.5zm3.4-2.5h1.8a1.3 1.3 0 0 1 1.3 1.3v3.4a1.3 1.3 0 0 1-1.3 1.3h-1.8zm1.2 1.1v3.8h.6a.2.2 0 0 0 .2-.2v-3.4a.2.2 0 0 0-.2-.2z"
+    />
+  ),
   check: (
     <path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
   ),

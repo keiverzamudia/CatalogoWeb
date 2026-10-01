@@ -142,13 +142,57 @@ export const DISPONIBILIDAD: Record<Disponibilidad, { label: string; clases: str
 
 export type EstadoProducto = 'ACTIVO' | 'INACTIVO';
 
-/** Etiqueta del banner navy del stand (antes "Distribuidor Autorizado Motul"). */
-export const BANNER_STAND = {
-  logo: 'MOTUL',
-  titulo: 'Distribuidor Autorizado Motul',
-  sub: 'Garantía de origen Barquisimeto / Centro-Occidente',
-  badge: 'STOCK REAL',
-};
+/* ---------------------------------------------------------------------------
+   INTERRUPTORES DE CONTENIDO
+   Nada de esto borra codigo: son puertas. Volver a `true` restaura la seccion
+   tal cual estaba, con buscador, filtros y las 217 fichas.
+   ------------------------------------------------------------------------- */
+
+/**
+ * Catalogo de productos (217 fichas + buscador + filtros).
+ * Se oculta mientras los catalogos oficiales sean los PDF.
+ */
+export const MOSTRAR_CATALOGO_PRODUCTOS = false;
+
+/**
+ * Banner "Distribuidor Autorizado Motul".
+ * Se retiro a pedido del cliente: ahora manda la presentacion del grupo.
+ */
+export const MOSTRAR_BANNER_DISTRIBUIDOR = false;
+
+/* ---------------------------------------------------------------------------
+   CATALOGOS OFICIALES (PDF)
+   Los archivos van en `public/catalogos/`. El nombre de `archivo` debe
+   coincidir EXACTAMENTE con el archivo (mayusculas y guiones incluidos).
+   ------------------------------------------------------------------------- */
+export interface CatalogoOficial {
+  id: string;
+  titulo: string;
+  sub: string;
+  archivo: string;
+  cta: string;
+}
+
+/**
+ * Los PDF se sirven desde `public/catalogos/`. El nombre de `archivo` debe
+ * coincidir EXACTAMENTE con el archivo real (mayusculas y guiones incluidos).
+ */
+export const CATALOGOS_OFICIALES: CatalogoOficial[] = [
+  {
+    id: 'lubricantes',
+    titulo: 'Catálogo San Luis Lubricantes',
+    sub: 'Lubricantes, filtros y mantenimiento',
+    archivo: '/catalogos/SAN-LUIS-LUBRICANTES.pdf',
+    cta: 'Ver catálogo',
+  },
+  {
+    id: 'transporte',
+    titulo: 'Catálogo San Luis Transporte',
+    sub: 'Unidades, carga y repuestos',
+    archivo: '/catalogos/SAN-LUIS-TRANSPORTE.pdf',
+    cta: 'Ver catálogo',
+  },
+];
 
 /** Secciones copiadas literalmente de code.html / screen.png. */
 export const COPY = {
@@ -159,7 +203,7 @@ export const COPY = {
     titulo: 'Lubricantes, filtros y repuestos',
     tituloEnStock: 'en existencia',
     parrafo:
-      'Disponibilidad inmediata para flotas pesadas, transporte de carga, camiones y autos. Retiro directo o despacho en 48 horas.',
+      'Somos un grupo de unidades de negocio: Distribuidora de Hidrocarburos San Luis, San Luis Lubricantes y San Luis Transporte. Disponibilidad inmediata para flotas pesadas, transporte de carga, camiones y autos.',
   },
   contacto: {
     titulo: 'Contacto y Sede',

@@ -113,7 +113,7 @@ export const MARCA_HEADER = {
   /** Letra del monograma del logo del header. */
   inicial: 'G',
   wordmark: 'SAN LUIS',
-  subwordmark: 'LUBRICANTES',
+  subwordmark: '',
   badge: 'STAND OFICIAL',
 };
 

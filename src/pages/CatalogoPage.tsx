@@ -1,21 +1,29 @@
 import { useEffect, useState } from 'react';
+import {
+  MOSTRAR_BANNER_DISTRIBUIDOR,
+  MOSTRAR_CATALOGO_PRODUCTOS,
+  type CatalogoOficial,
+} from '../config/catalog.config';
 import { catalogoRepo } from '../lib/catalogo.repository';
 import { registrarVisita } from '../lib/panel.api';
 import { urlContacto } from '../lib/whatsapp';
 import type { Producto } from '../data/tipos';
 import { BannerDistribuidor } from '../components/BannerDistribuidor';
 import { BotonSubir } from '../components/BotonSubir';
+import { BotonesCatalogos } from '../components/BotonesCatalogos';
 import { CanalesOficiales } from '../components/CanalesOficiales';
 import { CatalogSection } from '../components/CatalogSection';
 import { ContactoSede } from '../components/ContactoSede';
 import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
 import { HeroStand } from '../components/HeroStand';
+import { LectorCatalogo } from '../components/LectorCatalogo';
 import { ProductSheet } from '../components/ProductSheet';
 
 export function CatalogoPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [seleccionado, setSeleccionado] = useState<Producto | null>(null);
+  const [pdfAbierto, setPdfAbierto] = useState<CatalogoOficial | null>(null);
 
   useEffect(() => {
     let vivo = true;
@@ -54,12 +62,18 @@ export function CatalogoPage() {
         <main className="flex-1">
           <HeroStand />
           <CanalesOficiales />
-          <BannerDistribuidor />
 
-          <CatalogSection
-            productos={productos}
-            onSelect={setSeleccionado}
-          />
+          {/* Catalogos oficiales en PDF: ahora son la via principal. */}
+          <BotonesCatalogos onAbrir={setPdfAbierto} />
+
+          {MOSTRAR_BANNER_DISTRIBUIDOR && <BannerDistribuidor />}
+
+          {/* Catalogo de productos: se conserva entero en el codigo, solo se
+              deja de renderizar. Cambiar MOSTRAR_CATALOGO_PRODUCTOS a true
+              en catalog.config.ts lo restaura tal cual estaba. */}
+          {MOSTRAR_CATALOGO_PRODUCTOS && (
+            <CatalogSection productos={productos} onSelect={setSeleccionado} />
+          )}
 
           <ContactoSede productosSeleccionados={seleccionado ? [seleccionado.nombre] : []} />
         </main>
@@ -68,6 +82,10 @@ export function CatalogoPage() {
       </div>
 
       <ProductSheet producto={seleccionado} onCerrar={() => setSeleccionado(null)} />
+
+      {pdfAbierto && (
+        <LectorCatalogo catalogo={pdfAbierto} onCerrar={() => setPdfAbierto(null)} />
+      )}
 
       {/* Boton de subir: aparece recien despues de 500 px de scroll. */}
       <BotonSubir />

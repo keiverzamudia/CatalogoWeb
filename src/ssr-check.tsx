@@ -6,6 +6,7 @@
  * de diagnostico.
  */
 import { renderToStaticMarkup } from 'react-dom/server';
+import { CATALOGOS_OFICIALES } from './config/catalog.config';
 import { CatalogoLocal } from './lib/catalogo.repository';
 import { conteoPorCategoria } from './lib/catalogo.repository';
 import { filtrarCatalogo, coincide } from './lib/busqueda';
@@ -58,7 +59,6 @@ async function main() {
   const esperados: string[] = [
     'SAN LUIS',
     'STAND OFICIAL',
-    'Catálogo en Exhibición',
     'Lubricantes, filtros y repuestos',
     '@suministrossanluis',
     '@sanluishidrocarburo',
@@ -93,6 +93,31 @@ async function main() {
   for (const [nombre, ok] of contacto) {
     if (!ok) fallos++;
     console.log(`  contacto ${nombre} -> ${ok ? 'si' : 'NO'}`);
+  }
+
+  // Catalogos en PDF: son la via principal, y el catalogo de productos debe
+  // quedar OCULTO (no borrado) mientras el interruptor este en false.
+  //
+  // OJO: las rutas de los PDF NO estan en el HTML. Los botones guardan el
+  // objeto del catalogo y abren el visor por onClick, asi que `archivo` vive
+  // en el estado de React, no en el markup. Aqui se comprueba el markup y,
+  // aparte, que el dato exista en la configuracion.
+  const rutasPdfOk =
+    CATALOGOS_OFICIALES.length === 2 &&
+    CATALOGOS_OFICIALES.every((c) => c.archivo.startsWith('/catalogos/') && c.archivo.endsWith('.pdf'));
+
+  const pdf: [string, boolean][] = [
+    ['seccion de catalogos', html.includes('Catálogos oficiales')],
+    ['2 botones de catalogo', (html.match(/Ver catálogo/g) ?? []).length === 2],
+    ['rutas PDF en config', rutasPdfOk],
+    ['botones son <button>', (html.match(/<button type="button"/g) ?? []).length >= 2],
+    ['catalogo de productos OCULTO', !html.includes('Catálogo en Exhibición') && !html.includes('Buscar lubricante')],
+    ['banner Motul retirado', !html.includes('Distribuidor Autorizado Motul')],
+    ['unidades de negocio', html.includes('unidades de negocio') && html.includes('San Luis Transporte')],
+  ];
+  for (const [nombre, ok] of pdf) {
+    if (!ok) fallos++;
+    console.log(`  pdf ${nombre} -> ${ok ? 'si' : 'NO'}`);
   }
 
   console.log(fallos === 0 ? '\nOK: sin fallos' : `\nFALLOS: ${fallos}`);
