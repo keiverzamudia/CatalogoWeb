@@ -1,0 +1,32 @@
+# Dependencias
+node_modules/
+
+# Build
+dist/
+*.tsbuildinfo
+
+# Entorno — NUNCA commitear secretos (.env contiene hashes y claves)
+.env
+.env.local
+.env*.local
+
+# Sistema
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+
+# Salidas locales de pruebas
+.tmp/
+*.log
+npm-debug.log*
+# Salida del chequeo de humo SSR
+dist-ssr/
+
+# Carpeta fuente de imagenes montada por el cliente.
+# Su copia servible (y versionada) es public/catalogo/. No duplicar 2.5 MB en Git.
+# Para añadir fotos: copiar a public/catalogo/<marca>/productos/
+/catalogo/

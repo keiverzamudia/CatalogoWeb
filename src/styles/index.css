@@ -1,0 +1,144 @@
+/* ============================================================================
+   TOKENS — DESIGN.md + code.html
+   Paleta efectiva en la que los tres coinciden: navy #003366 + lime #95c800 sobre base clara.
+   La paleta Material 3 del frontmatter de DESIGN.md NO se usa (ver DECISIONES.md).
+   ========================================================================== */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-ext-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Rubik';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-italic.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Rubik';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-ext-italic.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@import 'tailwindcss';
+
+@theme {
+  --font-rubik: 'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-brand-navy: #003366;
+  --color-brand-navy-dark: #002244;
+  --color-brand-navy-light: #0d4a8a;
+  --color-brand-lime: #95c800;
+  --color-brand-lime-dark: #84b300;
+  --color-brand-lime-light: #aff000;
+  --color-brand-bg: #f8fafc;
+  --color-brand-whatsapp: #25d366;
+  --color-brand-whatsapp-dark: #1ebd5a;
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.25rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-rubik);
+    background-color: #f1f5f9; /* slate-100: fondo exterior de la maqueta Stitch */
+    color: #1e293b;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    overscroll-behavior-y: none;
+  }
+
+  /* Foco visible solo por teclado: en el stand se usa el dedo, no el teclado. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-navy);
+    outline-offset: 2px;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  /* ExtraBold Italic: la voz "impacto" del design system para heroes y stats. */
+  .font-rubik-extrabold-italic {
+    font-family: var(--font-rubik);
+    font-weight: 800;
+    font-style: italic;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Scroller de pills con snap: com portamiento del DESIGN para mobile. */
+  .pill-scroller {
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pill-scroller > * {
+    scroll-snap-align: start;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.6;
+  }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 1.8s infinite ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

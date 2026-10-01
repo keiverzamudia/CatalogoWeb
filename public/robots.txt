@@ -1,0 +1,7 @@
+# Admin: nunca indexado ni enlazado.
+User-agent: *
+Disallow: /admin
+Allow: /
+
+# El catalogo publico es la unica pagina indexable.
+Sitemap: https://TU-DOMAIN.vercel.app/sitemap.xml
