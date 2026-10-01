@@ -18,11 +18,12 @@
       Se pierde al reiniciar `npm run dev`. Sirve para probar el panel sin
       tocar Vercel.
 
-   PRIVACIDAD: cada contacto vive en un archivo con id aleatorio, asi su URL
-   publica no es deducible. Solo se puede leer con el token de servidor.
+   PRIVACIDAD: cada contacto vive en un archivo con id aleatorio y la tienda
+   se crea como "Soldado" (privada), asi que su contenido solo se puede leer
+   con el token de servidor. Nunca se expone una URL publica con telefonos.
    ========================================================================== */
 
-import { del, list, put } from '@vercel/blob';
+import { del, get, list, put } from '@vercel/blob';
 
 export interface Contacto {
   id: string;
@@ -64,6 +65,14 @@ const PREFIJO_CONTACTO = 'contactos/';
 const RETENCION_DIAS = 90;
 const VENTANA_DIAS = 30;
 
+/**
+ * Nivel de acceso de la tienda.
+ *   'private' -> tienda "Soldado"  (RECOMENDADO: aqui hay telefonos)
+ *   'public'  -> tienda "Publico"
+ * Si creaste la tienda como Publica, define BLOB_ACCESS=public en Vercel.
+ */
+const ACCESO: 'public' | 'private' = process.env.BLOB_ACCESS === 'public' ? 'public' : 'private';
+
 interface Archivo {
   clave: string;
   /** null en memoria: el cuerpo ya esta en `cuerpo`. */
@@ -81,7 +90,7 @@ function hayBlob(): boolean {
 async function guardar(clave: string, cuerpo: string): Promise<void> {
   if (hayBlob()) {
     await put(clave, cuerpo, {
-      access: 'public',
+      access: ACCESO,
       allowOverwrite: true,
       addRandomSuffix: false,
       contentType: 'application/json; charset=utf-8',
@@ -114,13 +123,18 @@ async function listar(prefijo: string): Promise<Archivo[]> {
   return salida;
 }
 
+/**
+ * Baja el contenido de un archivo.
+ * Con tienda privada hay que pedirlo por `get()` (firmado con el token): la
+ * URL del listado no sirve sin autenticacion.
+ */
 async function leerCuerpo(a: Archivo): Promise<string | null> {
   if (a.cuerpo !== null) return a.cuerpo;
-  if (!a.url) return null;
+  if (!hayBlob()) return null;
   try {
-    const r = await fetch(a.url);
-    if (!r.ok) return null;
-    return await r.text();
+    const encontrado = await get(a.clave, { access: ACCESO });
+    if (!encontrado?.stream) return null;
+    return await new Response(encontrado.stream).text();
   } catch {
     return null;
   }
@@ -162,9 +176,7 @@ export async function registrarVisita(sid: string, fecha: string): Promise<void>
 }
 
 /** 1 archivo por contacto, con id aleatorio. Sin lectura previa. */
-export async function guardarContacto(
-  datos: Omit<Contacto, 'id'>,
-): Promise<Contacto> {
+export async function guardarContacto(datos: Omit<Contacto, 'id'>): Promise<Contacto> {
   const contacto: Contacto = { ...datos, id: idAleatorio() };
   const sello = datos.ts.replace(/[:.]/g, '-');
   await guardar(`${PREFIJO_CONTACTO}${sello}-${contacto.id}.json`, JSON.stringify(contacto));
@@ -219,7 +231,7 @@ export async function leerPanel(): Promise<DatosPanel> {
     porDia.push({ fecha, total: porDiaMap.get(fecha) ?? 0 });
   }
 
-  /* Contactos: si hay que bajar los cuerpos (1 peticion c/u). */
+  /* Contactos: hay que bajar cada cuerpo (1 lectura c/u). */
   const archivosContacto = await listar(PREFIJO_CONTACTO);
   const contactos = (
     await Promise.all(
@@ -248,9 +260,4 @@ export async function leerPanel(): Promise<DatosPanel> {
     contactos,
     almacen,
   };
-}
-
-/** Solo para desarrollo: cuanto hay en memoria. */
-export function estadoMemoria(): number {
-  return memoria.size;
 }
