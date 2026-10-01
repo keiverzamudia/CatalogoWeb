@@ -5,8 +5,13 @@ consulta producto y escribe por WhatsApp. **Sin registro, sin login, sin carrito
 
 ## Estado actual
 
-**Entrega final.** Arquitectura **100 % estática**: sin backend, sin API, sin base de
-datos externa, sin Vercel Functions, sin analítica y sin autenticación.
+El **catálogo público sigue siendo 100 % estático**: sin base de datos, sin cookies
+de terceros y sin analítica de ningún proveedor. Se entrega en dos capas:
+
+| Capa | Qué es | Dónde vive |
+|---|---|---|
+| Catálogo (el producto) | 217 fichas en un JSON versionado en Git | `src/data/productos.json` → CDN de Vercel |
+| Panel interno `/admin` | contador de visitas + contactos del formulario, exportables a PDF y Excel | 3 funciones de Vercel + Vercel Blob |
 
 | Área | Estado | Nota |
 |---|---|---|
@@ -15,9 +20,8 @@ datos externa, sin Vercel Functions, sin analítica y sin autenticación.
 | Búsqueda + filtros | ✅ | 6 campos indexados, conteos derivados de los datos |
 | Detalle de producto | ✅ | Bottom sheet + deep link `#p/<id>` |
 | WhatsApp | ✅ | Todo desde config, cero números literales en componentes |
-| Panel `/admin` | ✅ | Solo lectura, visual, sin login y sin backend |
-| Analítica | ✅ | **No existe** (fuera de alcance deliberadamente) |
-| Backend / BD / API | ✅ | **No existen** (fuera de alcance deliberadamente) |
+| Panel `/admin` | ✅ | Visitas + contactos, export PDF/Excel, clave simple |
+| Analítica de terceros | ✅ | **No existe** (solo un contador propio de una cifra) |
 
 ## Comandos
 
@@ -28,17 +32,26 @@ npm run typecheck  # tsc --noEmit
 npm run build      # typecheck + vite build -> dist/
 npm run preview    # sirve dist/ localmente
 npm run check:ssr  # humo: render en Node + busquedas verificadas
+npm run api:local  # prueba las funciones de /api en http://localhost:4321
 ```
 
 ## Despliegue en Vercel
 
-No hay que configurar **ninguna** variable ni secreto.
+El **catálogo funciona sin configurar nada**. Solo el panel `/admin` necesita
+dos pasos manuales:
 
 1. Subir el repo a GitHub.
 2. Importarlo en Vercel con framework **Vite**.
 3. Build command `npm run build`, output `dist`.
 4. `vercel.json` ya trae el rewrite de SPA (todas las rutas → `index.html`) y las
    cabeceras de caché.
+5. *(Solo para `/admin`)* **Storage → Blob → Create database → Connect Project**.
+   Vercel inyecta `BLOB_READ_WRITE_TOKEN` automáticamente.
+6. *(Solo para `/admin`)* **Settings → Environment Variables** → `PANEL_CLAVE`
+   con la clave que quieras. Sin ella, `/api/panel` responde con un aviso claro.
+
+Sin los pasos 5 y 6 el catálogo funciona igual: el contador de visitas y el
+guardado de contactos fallan en silencio y no afectan al visitante.
 
 ## Estructura
 
@@ -48,6 +61,10 @@ code.html            ← referencia Stitch (NO es el código de la app)
 DESIGN.md            ← design system
 screen.png           ← referencia visual
 vercel.json          ← rewrites de SPA + caché + cabeceras de seguridad
+
+api/                 ← 3 funciones Vercel: /api/visita, /api/contacto, /api/panel
+shared/              ← logica compartida servidor: almacen del panel + respuestas
+scripts/prueba-api.ts ← arnes local (npm run api:local), no entra en el build
 
 src/
 ├── config/
@@ -59,6 +76,7 @@ src/
 ├── lib/
 │   ├── catalogo.repository.ts  ← CatalogoLocal sobre el JSON + helpers/estadísticas
 │   ├── busqueda.ts             ← normalización + matching
+│   ├── panel.api.ts            ← llamadas a /api (visitas y contactos)
 │   └── whatsapp.ts             ← mensajes contextuales
 ├── components/           ← uno por sección del Stitch
 ├── pages/CatalogoPage.tsx
@@ -85,12 +103,13 @@ Concentrados en `src/config/site.config.ts`, marcados como provisorios:
 
 | Campo | Valor actual | Estado |
 |---|---|---|
-| `SITE.whatsappE164` | `582510000000` | **Número de ejemplo. No confirmado.** |
-| `SITE.telefono` | `+58 (251) 000-0000` | Ejemplo |
-| `SITE.email` | `comercial@gruposanluis.com` | Del sitio institucional |
-| `SITE.eventoAnio` | `2025` | Confirmar año real |
-| `SITE.redes[1..3].href` | Instagram `@gruposanluis.ve`, LinkedIn y YouTube sin URL | Instagram parcial; los otros dos son `#` |
+| `SITE.whatsappE164` | `584129640810` | Cargado por el cliente. Verificar dígitos antes de imprimir el QR |
+| `SITE.telefono` | `+58 412 964 0810` | Derivado del WhatsApp: ya no hay número mock |
+| `SITE.email` | `ventassanluis.sl@gmail.com.ve` | Revisar el sufijo `.ve` en un dominio gmail |
+| `SITE.eventoAnio` | `2025` | Confirmar el año real del evento |
+| `SITE.redes` | WhatsApp + `@suministrossanluis` + `@sanluishidrocarburo` | Instagram reales; LinkedIn y YouTube se retiraron |
 | `SITE.hero[0].valor` | `+1.200` Referencias | Afirmación comercial del cliente |
+| `SITE.copyrightAnio` | `2025` | Alinear con `eventoAnio` |
 
 En desarrollo la consola lista estos campos al cargar.
 
@@ -103,20 +122,39 @@ Agregar una categoría: una entrada en `CATEGORIAS` (`catalog.config.ts`) más e
 
 ## Privacidad
 
-Catálogo público: sin cookies de terceros, sin fingerprinting, sin analítica,
-sin Google Fonts ni ningún otro CDN externo.
+Catálogo público: sin cookies de terceros, sin fingerprinting, sin analítica de
+ningún proveedor, sin Google Fonts ni ningún otro CDN externo.
+
+Lo único propio que se guarda es un **número aleatorio en `localStorage`** del
+navegador (`gs_visitante`) y la fecha de su último acceso, para poder decir
+«cuántos navegadores distintos entraron» sin poder seguir a nadie entre sitios.
+Si el navegador bloquea el almacenamiento, simplemente no se cuenta.
 
 ## Panel administrativo
 
-`/admin` — herramienta visual interna de **solo lectura**, ruta separada y cargada
-bajo demanda, **sin ningún enlace, botón ni menú público que la mencione**, y
-bloqueada en `robots.txt`.
+`/admin` — cuadro de mando interno, ruta separada y cargada bajo demanda,
+**sin ningún enlace, botón ni menú público que la mencione**, y bloqueada en
+`robots.txt`.
 
-Muestra: total de productos, desglose por categoría y por marca, productos sin
-descripción / sin imagen, códigos repetidos, la configuración comercial vigente
-(WhatsApp, evento, redes) y los valores provisionales.
+Muestra:
 
-**No tiene servidor, base de datos ni login, y no lo pretende.** No es un sistema
-de seguridad ni un CMS: es una consulta del propio frontend sobre
-`src/data/productos.json`. Para editar productos se modifica ese archivo y se
-vuelve a desplegar.
+- **Visitas**: registros de los últimos 90 días, navegadores distintos de los
+  últimos 30, accesos de hoy y la serie diaria de 30 días en barras.
+- **Contactos**: las personas que dejaron sus datos en el formulario del
+  catálogo, con buscador y botón para responderles por WhatsApp.
+
+Ambas secciones se exportan a **PDF** y a **Excel** (`jspdf` + `write-excel-file`,
+cargados solo al pulsar el botón, nunca en la página pública).
+
+Cómo funciona y qué **no** es:
+
+- Los datos viven en **Vercel Blob** (plan Hobby: 1 GB y 2.000 escrituras al mes).
+  Una visita = 1 archivo por día y navegador; un contacto = 1 archivo con id
+  aleatorio, para que su URL no sea deducible.
+- El formulario del catálogo **sigue abriendo WhatsApp** igual que antes: guardar
+  el contacto es un destino extra, nunca lo reemplaza.
+- La clave que protege `/admin` **no es autenticación real**: viaja en cada
+  petición y cualquiera que la conozca entra. Solo evita que alguien que adivine
+  la URL lea los teléfonos por accidente.
+- Sin `PANEL_CLAVE` o sin tienda de Blob conectada, el panel muestra un aviso
+  claro y el catálogo público no se ve afectado en absoluto.

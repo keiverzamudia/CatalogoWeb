@@ -3,6 +3,9 @@ node_modules/
 
 # Build
 dist/
+# Salidas de Nitro (local .output/ y Build Output API de Vercel .vercel/)
+.output/
+.vercel/
 *.tsbuildinfo
 
 # Entorno — NUNCA commitear secretos (.env contiene hashes y claves)

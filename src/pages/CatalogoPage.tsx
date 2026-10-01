@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { catalogoRepo, conteoPorCategoria } from '../lib/catalogo.repository';
+import { catalogoRepo } from '../lib/catalogo.repository';
+import { registrarVisita } from '../lib/panel.api';
 import { urlContacto } from '../lib/whatsapp';
 import type { Producto } from '../data/tipos';
 import { BannerDistribuidor } from '../components/BannerDistribuidor';
@@ -23,6 +24,12 @@ export function CatalogoPage() {
     return () => {
       vivo = false;
     };
+  }, []);
+
+  // Contador del panel: una sola llamada por navegador al dia, sin bloquear
+  // el render. Si /api no existe la promesa se traga sola.
+  useEffect(() => {
+    registrarVisita();
   }, []);
 
   // El detalle abre como sheet; el deep link /p/:id lo resuelve el router.
@@ -50,7 +57,6 @@ export function CatalogoPage() {
 
           <CatalogSection
             productos={productos}
-            conteos={conteoPorCategoria(productos)}
             onSelect={setSeleccionado}
           />
 

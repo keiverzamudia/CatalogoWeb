@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { COPY } from '../config/catalog.config';
 import { SITE } from '../config/site.config';
+import { guardarContacto } from '../lib/panel.api';
 import { urlCotizacion } from '../lib/whatsapp';
 import { Icono } from './ui/Icono';
 
@@ -42,9 +43,18 @@ export function CotizacionForm({ productosSeleccionados = [] }: { productosSelec
       <form
         className="space-y-2"
         onSubmit={(e) => {
-          // Sin backend en esta fase: el CTA del form reenvia a WhatsApp con
-          // los datos ya escritos. El envio real llega en la fase de contactos.
           e.preventDefault();
+          // DOS destinos en la misma accion:
+          //  1) WhatsApp, como hasta ahora (el canal inmediato no cambia)
+          //  2) el panel /admin, para que quede en la lista de contactos.
+          // El guardado es fire-and-forget: si /api no esta publicado, el
+          // formulario sigue abriendo WhatsApp igual.
+          void guardarContacto({
+            nombre: nombre.trim(),
+            telefono: telefono.trim(),
+            interes: mensaje.trim(),
+            productos: productosSeleccionados.join(', '),
+          });
           window.open(href, '_blank', 'noopener,noreferrer');
         }}
       >

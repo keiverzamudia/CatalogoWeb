@@ -97,14 +97,18 @@ export interface ResultadoCatalogo {
   total: number;
 }
 
-/** Aplica busqueda + filtro de categoria. Es la unica funcion de filtrado. */
+/** Aplica busqueda + filtro de categoria y marca. Es la unica funcion de filtrado. */
 export function filtrarCatalogo(
   productos: Producto[],
   consulta: string,
   categoria: CategoriaId,
+  marca: string = 'TODAS',
 ): ResultadoCatalogo {
   const filtrados = productos.filter(
-    (p) => (categoria === 'TODOS' || p.categoria === categoria) && coincide(p, consulta),
+    (p) =>
+      (categoria === 'TODOS' || p.categoria === categoria) &&
+      (marca === 'TODAS' || p.marca === marca) &&
+      coincide(p, consulta),
   );
   return { productos: filtrados, total: filtrados.length };
 }

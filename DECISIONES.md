@@ -225,3 +225,43 @@ Muestra totales, desgloses, cobertura de fichas y la configuración vigente.
 No tiene servidor, ni base de datos, ni login: **no promete seguridad ni
 persistencia**. Editar productos = editar el JSON y volver a desplegar.
 Está fuera de la navegación pública y bloqueado en `robots.txt`.
+
+---
+
+## D-14 — Panel de visitas y contactos (revierte parte de D-13)
+
+**Pedido posterior del cliente.** `/admin` deja de mostrar estadísticas del catálogo
+y pasa a mostrar: (1) cuántas personas entraron y (2) la lista de personas que
+dejaron sus datos para ser contactadas, con exportación a PDF y Excel.
+
+**Se levanta la restricción de D-13 por decisión explícita del cliente.** Un
+contador agregado entre dispositivos y una lista de contactos compartida **no se
+pueden hacer sin almacenamiento**: `localStorage` solo vería lo del propio equipo
+y no serviría para un stand.
+
+**Decisión.** Tres funciones de Vercel + Vercel Blob (plan Hobby, gratuito):
+
+```
+POST /api/visita    -> 1 archivo por (día, navegador)
+POST /api/contacto  -> 1 archivo por contacto, con id aleatorio
+GET  /api/panel     -> resumen + contactos (cabecera x-panel-clave)
+```
+
+El diseño evita el "leer antes de escribir": el conteo se reconstruye leyendo los
+**nombres** de los archivos, así que cada visita cuesta 1 escritura y no 2-3. La
+retención es de 90 días. El catálogo público no cambia: las llamadas son
+fire-and-forget y si `/api` no está disponible el visitante no nota nada.
+
+**Se descartó Nitro.** Era la ruta que recomienda la documentación de Vercel para
+«añadir backend a una app Vite», pero al construir se comprobó que **no escaneaba
+`api/`**: la función salía con 6 KB y sin ninguna ruta. Además movía la salida de
+`dist/` a `.vercel/output/`, lo que ponía en riesgo un despliegue ya verificado.
+Se volvió a `dist/` y a `vercel.json` intactos.
+
+**Sobre la honestidad de lo que se muestra** (va escrito en la propia pantalla):
+
+- «Navegadores distintos» es una **aproximación** de personas, no una medición.
+- La clave de `/admin` **no es autenticación**: solo evita que alguien que adivine
+  la URL lea teléfonos por accidente.
+- El aviso del plan Hobby («non-commercial, personal use») también se dejó
+  documentado; este sitio lo usa una empresa real.

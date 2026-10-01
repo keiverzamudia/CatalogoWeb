@@ -8,7 +8,7 @@ import { Icono } from './ui/Icono';
  */
 export function HeroStand() {
   return (
-    <section className="bg-brand-navy text-white px-4 pt-5 pb-6 rounded-b-[24px] shadow-md relative overflow-hidden">
+    <section className="bg-brand-navy text-white px-4 sm:px-6 lg:px-8 pt-5 pb-7 sm:pt-7 sm:pb-9 rounded-b-2xl sm:rounded-b-3xl shadow-md relative overflow-hidden">
       {/* Blobs decorativos: aria-hidden, no aportan informacion */}
       <div
         aria-hidden="true"
@@ -20,26 +20,28 @@ export function HeroStand() {
       />
 
       <div className="relative">
-        <div className="flex items-center justify-between text-[10px] mb-2 text-slate-300 border-b border-white/10 pb-1.5">
-          <span className="flex items-center font-semibold text-brand-lime uppercase">
-            <Icono nombre="qrcode" className="w-3 h-3 mr-1.5" />
+        <div className="flex items-center justify-between text-[10px] sm:text-xs mb-3 text-slate-300 border-b border-white/10 pb-2">
+          <span className="flex items-center font-semibold text-brand-lime uppercase tracking-[0.16em]">
+            <Icono nombre="qrcode" className="w-3.5 h-3.5 mr-2" />
             {COPY.hero.eyebrow}
           </span>
-          <span className="text-[9px] font-mono tracking-tight text-slate-400">
+          <span className="text-[9px] sm:text-[10px] font-mono tracking-tight text-slate-400">
             {SITE.evento} {SITE.eventoAnio}
           </span>
         </div>
 
-        <h1 className="text-xl leading-tight text-white mb-2 font-rubik-extrabold-italic uppercase tracking-tight">
+        <h1 className="text-xl sm:text-2xl lg:text-[32px] leading-[1.15] text-white mb-2.5 font-rubik-extrabold-italic uppercase tracking-tight">
           {COPY.hero.titulo}{' '}
-          <span className="text-brand-lime inline-block bg-brand-lime/10 px-1.5 py-0.5 rounded border border-brand-lime/30 text-shadow-sm">
+          <span className="text-brand-lime inline-block bg-brand-lime/10 px-1.5 py-0.5 rounded border border-brand-lime/30">
             {COPY.hero.tituloEnStock}
           </span>
         </h1>
 
-        <p className="text-xs text-slate-300 leading-relaxed mb-3.5">{COPY.hero.parrafo}</p>
+        <p className="text-xs sm:text-sm lg:text-[15px] text-slate-300 leading-relaxed mb-4 max-w-2xl">
+          {COPY.hero.parrafo}
+        </p>
 
-        <div className="grid grid-cols-3 gap-2 bg-brand-navy-dark/80 p-2.5 rounded-xl border border-white/10 backdrop-blur-sm">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 bg-brand-navy-dark/80 p-3 sm:p-4 rounded-xl border border-white/10 backdrop-blur-sm">
           {SITE.hero.map((s, i) => (
             <div
               key={s.label}
@@ -49,8 +51,12 @@ export function HeroStand() {
                   : 'text-center pl-1'
               }
             >
-              <div className="text-brand-lime font-black text-sm italic">{s.valor}</div>
-              <div className="text-[9px] text-slate-300 font-medium">{s.label}</div>
+              <div className="text-brand-lime font-black text-sm sm:text-lg lg:text-xl italic leading-none">
+                {s.valor}
+              </div>
+              <div className="text-[9px] sm:text-[10px] text-slate-300 font-medium mt-1 uppercase tracking-wide">
+                {s.label}
+              </div>
             </div>
           ))}
         </div>

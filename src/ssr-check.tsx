@@ -60,11 +60,25 @@ async function main() {
     'STAND OFICIAL',
     'Catálogo en Exhibición',
     'Lubricantes, filtros y repuestos',
+    '@suministrossanluis',
+    '@sanluishidrocarburo',
   ];
   for (const s of esperados) {
     const ok = html.includes(s);
     if (!ok) fallos++;
     console.log(`  contiene "${s}" -> ${ok ? 'si' : 'NO'}`);
+  }
+
+  // Canales: 2 Instagram + 1 WhatsApp, sin LinkedIn ni YouTube.
+  const canales: [string, boolean][] = [
+    ['Instagram x2', (html.match(/@/g) ?? []).length >= 2 && !html.includes('LinkedIn')],
+    ['sin LinkedIn', !html.includes('LinkedIn')],
+    ['sin YouTube', !html.includes('YouTube')],
+    ['cta WhatsApp presente', html.includes('Atención Stand') && html.includes('wa.me')],
+  ];
+  for (const [nombre, ok] of canales) {
+    if (!ok) fallos++;
+    console.log(`  canales ${nombre} -> ${ok ? 'si' : 'NO'}`);
   }
 
   console.log(fallos === 0 ? '\nOK: sin fallos' : `\nFALLOS: ${fallos}`);

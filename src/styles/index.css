@@ -2,7 +2,15 @@
    TOKENS — DESIGN.md + code.html
    Paleta efectiva en la que los tres coinciden: navy #003366 + lime #95c800 sobre base clara.
    La paleta Material 3 del frontmatter de DESIGN.md NO se usa (ver DECISIONES.md).
+
+   ORDEN IMPORTANTE: @import 'tailwindcss' va PRIMERO (regla CSS: @import solo
+   puede ir antes de cualquier otra regla). Si se mueve para abajo, los layers
+   de Tailwind se declaran fuera de orden y las utilidades base dejan de ganar.
    ========================================================================== */
+@import 'tailwindcss';
+
+/* Rubik variable (400-900) auto-hospedada: sin peticion a Google Fonts.
+   Un solo archivo latin cubre todos los pesos usados por el diseno. */
 @font-face {
   font-family: 'Rubik';
   font-style: normal;
@@ -44,11 +52,12 @@
     U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-@import 'tailwindcss';
-
 @theme {
+  /* Familia tipografica: Rubik 400-900 (normal + italic). */
   --font-rubik: 'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --default-font-family: var(--font-rubik);
 
+  /* Paleta de marca (navy + lime) */
   --color-brand-navy: #003366;
   --color-brand-navy-dark: #002244;
   --color-brand-navy-light: #0d4a8a;
@@ -64,8 +73,13 @@
 }
 
 @layer base {
+  /* La fuente se fija en html, no solo en body: los portales (inputs, botones,
+     selects) usan font-family:inherit y así no caen nunca al font del SO. */
   html {
     -webkit-text-size-adjust: 100%;
+    font-family: var(--font-rubik);
+    /* Suaviza el render de las familias display (Rubik Black Italic). */
+    text-rendering: optimizeLegibility;
   }
 
   body {

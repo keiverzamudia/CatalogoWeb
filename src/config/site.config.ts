@@ -4,8 +4,9 @@
    redes, hero y ubicacion. NO repetirlos en componentes.
 
    ⚠ DATO PROVISIONAL
-   WhatsApp (582510000000), telefono, email y anio del evento vienen del mockup
-   o del sitio institucional: NO estan confirmados por el cliente.
+   WhatsApp (WHATSAPP_E164) SI esta cargado por el cliente; telefono, email,
+   anio del evento y el 2do Instagram siguen siendo datos del mockup y NO
+   estan confirmados. Ver DATOS_PROVISIONALES abajo.
    Para cambiar el WhatsApp se edita UNA SOLA linea: WHATSAPP_E164, abajo.
    En desarrollo la consola lista todos los valores pendientes.
    ========================================================================== */
@@ -42,12 +43,23 @@ export interface ConfigSitio {
 }
 
 /**
- * PROVISIONAL — numero de WhatsApp de EJEMPLO, NO confirmado.
- * Se cambia SOLO aca: alimenta SITE.whatsappE164, la tile de redes y
- * todos los CTA (src/lib/whatsapp.ts).
+ * Numero de WhatsApp del stand. UNICO PUNTO DE CAMBIO: alimenta
+ * SITE.whatsappE164, la tile de redes, el FAB flotante y todos los CTA
+ * (src/lib/whatsapp.ts), que anaden el mensaje contextual con ?text=.
+ *
+ * Si se quisiera forzar un link corto de QR de WhatsApp en la tile,
+ * reemplazar WHATSAPP_URL por ese link (siempre derivado, sin llaves raras):
+ *   const WHATSAPP_URL = 'https://wa.me/qr/CODIGO';
  */
-const WHATSAPP_E164 = '582510000000';
+const WHATSAPP_E164 = '584129640810';
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_E164}`;
+
+/** Display legible de un E.164: 584129640810 -> +58 412 964 0810 */
+function formatoTelefono(e164: string): string {
+  const n = e164.replace(/\D/g, '');
+  if (n.length < 12) return `+${n}`;
+  return `+${n.slice(0, 2)} ${n.slice(2, 5)} ${n.slice(5, 8)} ${n.slice(8)}`;
+}
 
 export const SITE: ConfigSitio = {
   empresa: 'GRUPO SAN LUIS',
@@ -58,42 +70,34 @@ export const SITE: ConfigSitio = {
   eventoAnio: '2025', // mock: confirmar año real del evento
   ubicacion: 'Barquisimeto, Estado Lara, Venezuela',
   direccion: 'Barquisimeto, Estado Lara, Venezuela. Despachos a nivel nacional.',
-  email: 'comercial@gruposanluis.com', // mock: dato tomado del sitio institucional
-  telefono: '+58 (251) 000-0000', // mock: numero de ejemplo, NO confirmado
-  whatsappE164: WHATSAPP_E164, // provisional: ver WHATSAPP_E164 arriba
+  email: 'ventassanluis.sl@gmail.com.ve', // mock: dato tomado del sitio institucional
+  telefono: formatoTelefono(WHATSAPP_E164), // derivado del WhatsApp: sin numeros mock
+  whatsappE164: WHATSAPP_E164, // ver WHATSAPP_E164 arriba (unico punto de cambio)
   horario: 'Lun–Vie 7:00–17:00',
   redes: [
     {
       id: 'whatsapp',
       label: 'WhatsApp',
       sublabel: 'Atención Stand',
-      href: WHATSAPP_URL, // derivada, no literales
+      href: WHATSAPP_URL, // derivada de WHATSAPP_E164, no literales
       iconoClases: 'bg-brand-whatsapp',
       icono: 'whatsapp',
     },
     {
-      id: 'instagram',
+      id: 'instagram-suministros',
       label: 'Instagram',
-      sublabel: '@gruposanluis.ve',
-      href: 'https://instagram.com/gruposanluis.ve',
+      sublabel: '@suministrossanluis',
+      href: 'https://www.instagram.com/suministrossanluis/',
       iconoClases: 'bg-gradient-to-br from-purple-600 via-pink-600 to-amber-500',
       icono: 'instagram',
     },
     {
-      id: 'linkedin',
-      label: 'LinkedIn',
-      sublabel: 'Grupo San Luis',
-      href: 'https://linkedin.com',
-      iconoClases: 'bg-blue-600',
-      icono: 'linkedin',
-    },
-    {
-      id: 'youtube',
-      label: 'YouTube / TikTok',
-      sublabel: 'Videos & Casos',
-      href: 'https://youtube.com',
-      iconoClases: 'bg-red-600',
-      icono: 'youtube',
+      id: 'instagram-grupo',
+      label: 'Instagram',
+      sublabel: '@sanluishidrocarburo', // PROVISIONAL: handle del mockup de Stitch
+      href: 'https://www.instagram.com/sanluishidrocarburo/',
+      iconoClases: 'bg-gradient-to-br from-purple-600 via-pink-600 to-amber-500',
+      icono: 'instagram',
     },
   ],
   hero: [
@@ -124,13 +128,10 @@ export const FOOTER = {
  */
 export const DATOS_PROVISIONALES = [
   'SITE.eventoAnio',
-  'SITE.telefono',
-  'SITE.whatsappE164',
   'SITE.email',
-  'SITE.redes[1].href',
-  'SITE.redes[2].href',
-  'SITE.redes[3].href',
+  'SITE.redes[2].href — 2do Instagram (@gruposanluis.ve)',
   'SITE.hero[0].valor',
+  'WHATSAPP_E164 — cargado por el cliente: verificar digitos antes de imprimir el QR',
 ] as const;
 
 if (import.meta.env.DEV) {

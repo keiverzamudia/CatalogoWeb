@@ -1,4 +1,4 @@
-import { CATEGORIAS, type CategoriaId } from '../config/catalog.config';
+import { CATEGORIAS, compararMarca, type CategoriaId } from '../config/catalog.config';
 import type { Producto, ProductoInput } from '../data/tipos';
 import productosCrudos from '../data/productos.json';
 
@@ -72,6 +72,23 @@ export function conteoPorCategoria(productos: Producto[]): ConteoCategoria[] {
     label: c.label,
     total: porId.get(c.id) ?? 0,
   }));
+}
+
+export interface ConteoMarca {
+  marca: string;
+  total: number;
+}
+
+/**
+ * Conteos por marca, derivados de los datos reales y ordenados segun el orden
+ * curado (MARCAS_ORDEN). Es la fuente de las pills de marca y de las secciones.
+ */
+export function conteoPorMarca(productos: Producto[]): ConteoMarca[] {
+  const porMarca = new Map<string, number>();
+  for (const p of productos) porMarca.set(p.marca, (porMarca.get(p.marca) ?? 0) + 1);
+  return [...porMarca.entries()]
+    .map(([marca, total]) => ({ marca, total }))
+    .sort((a, b) => compararMarca(a.marca, b.marca));
 }
 
 /* --- estadisticas para el panel /admin (visual, solo lectura) ---------- */

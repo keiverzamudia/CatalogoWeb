@@ -101,6 +101,33 @@ export function colorMarca(marca?: string): string {
 }
 
 /* ---------------------------------------------------------------------------
+   ORDEN CURADO DE MARCAS
+   Define como se agrupan y ordenan las marcas en el catalogo (secciones y
+   pills de filtro). MOTUL primero por ser la marca ancla del stand; el resto
+   sigue el orden de importancia comercial. Las marcas no listadas caen al
+   final en orden alfabetico.
+   ------------------------------------------------------------------------- */
+export const MARCAS_ORDEN: string[] = [
+  'MOTUL',
+  'AMSOIL',
+  'SENFINECO',
+  'MILLARD',
+  'VOLKER',
+  'PDV',
+  'MICHELIN',
+];
+
+export function pesoMarca(marca: string): number {
+  const i = MARCAS_ORDEN.indexOf(marca.toUpperCase());
+  return i === -1 ? MARCAS_ORDEN.length : i;
+}
+
+/** Comparador estable para ordenar/agrupar por marca. */
+export function compararMarca(a: string, b: string): number {
+  return pesoMarca(a) - pesoMarca(b) || a.localeCompare(b, 'es');
+}
+
+/* ---------------------------------------------------------------------------
    DISPONIBILIDAD
    Badge semantico. Colores segun DESIGN.md "State Semantics".
    ------------------------------------------------------------------------- */
@@ -141,4 +168,6 @@ export const COPY = {
   },
   buscar: { placeholder: 'Buscar lubricante, filtro o código...' },
   verTodas: 'Ver todas las referencias',
+  verMas: 'Ver más referencias',
+  todasLasMarcas: 'Todas las marcas',
 };

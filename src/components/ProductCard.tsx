@@ -31,12 +31,12 @@ export const ProductCard = forwardRef<HTMLLIElement, Props>(function ProductCard
   return (
     <li
       ref={ref}
-      className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between overflow-hidden hover:border-brand-navy transition group"
+      className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between overflow-hidden hover:border-brand-navy hover:shadow-md hover:-translate-y-0.5 transition group"
     >
       <button
         type="button"
         onClick={() => onSelect?.(p)}
-        className="p-2 relative text-left w-full block"
+        className="p-2.5 sm:p-3 relative text-left w-full block"
         aria-label={`Ver detalle de ${p.nombre}`}
       >
         {p.etiqueta && (
@@ -47,7 +47,7 @@ export const ProductCard = forwardRef<HTMLLIElement, Props>(function ProductCard
           </span>
         )}
 
-        <div className="w-full h-28 bg-slate-100 rounded-lg flex items-center justify-center p-1.5 relative overflow-hidden">
+        <div className="w-full aspect-[4/5] bg-slate-100 rounded-lg flex items-center justify-center p-2 relative overflow-hidden">
           {p.imagen ? (
             <img
               src={p.imagen}
@@ -57,7 +57,7 @@ export const ProductCard = forwardRef<HTMLLIElement, Props>(function ProductCard
               loading={priority ? 'eager' : 'lazy'}
               decoding={priority ? 'sync' : 'async'}
               fetchPriority={priority ? 'high' : 'auto'}
-              className="max-h-full max-w-full object-contain group-hover:scale-[1.06] transition-transform duration-300"
+              className="h-full w-full object-contain object-center group-hover:scale-[1.04] transition-transform duration-300"
             />
           ) : (
             /* Placeholder coherente: el Stitch usaba un pictograma FA sobre la
@@ -80,31 +80,35 @@ export const ProductCard = forwardRef<HTMLLIElement, Props>(function ProductCard
           )}
         </div>
 
-        <div className="mt-2">
+        <div className="mt-2.5">
           {p.marca && (
-            <span className={`text-[9px] uppercase font-bold tracking-wider ${colorMarca(p.marca)}`}>
+            <span
+              className={`block text-[9px] sm:text-[10px] uppercase font-bold tracking-[0.12em] ${colorMarca(p.marca)}`}
+            >
               {p.marca}
             </span>
           )}
-          <h3 className="text-xs font-bold text-slate-800 leading-tight line-clamp-1">{p.nombre}</h3>
+          <h3 className="text-xs sm:text-[13px] lg:text-sm font-bold text-slate-900 leading-snug line-clamp-2 mt-0.5">
+            {p.nombre}
+          </h3>
 
           {p.codigo && (
-            <div className="mt-1">
-              <span className="text-[10px] font-mono font-bold text-brand-navy bg-slate-100 px-1.5 py-0.2 rounded border border-slate-200 inline-block">
+            <div className="mt-1.5">
+              <span className="text-[10px] font-mono font-bold text-brand-navy bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 inline-block">
                 #{p.codigo}
               </span>
             </div>
           )}
 
-          <p className="text-[10px] text-slate-500 mt-1 line-clamp-1">
+          <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1.5 leading-snug line-clamp-2">
             {[p.presentacion, p.subcategoria].filter(Boolean).join(' • ')}
           </p>
         </div>
       </button>
 
-      <div className="p-2 pt-0">
+      <div className="p-2.5 pt-0">
         <a
-          className="w-full bg-brand-navy hover:bg-brand-navy-light active:bg-brand-navy text-white text-[11px] font-bold py-1.5 rounded-lg text-center flex items-center justify-center transition shadow-xs min-h-[36px]"
+          className="w-full bg-brand-navy hover:bg-brand-navy-light active:bg-brand-navy text-white text-[11px] sm:text-xs font-bold py-2 rounded-lg text-center flex items-center justify-center transition shadow-xs min-h-[38px]"
           href={urlProducto(p)}
           target="_blank"
           rel="noopener noreferrer"
