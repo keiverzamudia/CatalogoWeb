@@ -17,6 +17,7 @@ export type NombreIcono =
   | 'close'
   | 'chevron-left'
   | 'chevron-right'
+  | 'flecha-arriba'
   | 'check';
 
 interface Props {
@@ -87,6 +88,7 @@ const PATHS: Record<NombreIcono, React.ReactNode> = {
   ),
   'chevron-left': <path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />,
   'chevron-right': <path fill="currentColor" d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />,
+  'flecha-arriba': <path fill="currentColor" d="M12 4 5.6 10.4 7 11.8l4-4V20h2V7.8l4 4 1.4-1.4z" />,
   check: (
     <path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
   ),

@@ -47,6 +47,19 @@ export function CanalesOficiales() {
             </a>
           ))}
         </div>
+
+        {/* Acceso directo al formulario. Estaba enterrado al final, despues de
+            los 200+ productos, y por eso nadie dejaba sus datos. */}
+        <a
+          href="#contacto"
+          className="mt-3 w-full bg-brand-navy hover:bg-brand-navy-light text-white rounded-xl px-3 py-3 flex items-center justify-center gap-2 transition active:scale-[.99] min-h-[48px]"
+        >
+          <Icono nombre="address-card" className="w-4 h-4 text-brand-lime shrink-0" />
+          <span className="text-xs sm:text-sm font-bold">Dejanos tu contacto</span>
+          <span className="text-[10px] text-brand-lime/90 font-medium hidden sm:inline">
+            · te escribimos nosotros
+          </span>
+        </a>
       </div>
     </section>
   );

@@ -40,7 +40,18 @@ export function urlStand(): string {
 
 /** Link de contacto generico para la tarjeta de WhatsApp. */
 export function urlContacto(): string {
-  return link('Hola, desire información sobre lubricantes y repuestos.');
+  return link('Hola, deseo información sobre lubricantes y repuestos.');
+}
+
+/**
+ * Link de contacto con los datos que el visitante escribio en el formulario.
+ * Se usa el encabezado de contacto (no el de cotizacion) porque el visitante
+ * puede no haber indicado ningun producto: solo dejo su telefono.
+ */
+export function urlContactoConDatos(lineas: string[]): string {
+  const limpio = lineas.filter((l) => l.trim().length > 0);
+  const cuerpo = limpio.length ? `Hola, dejo mis datos:\n${limpio.join('\n')}` : 'Hola, deseo información.';
+  return link(cuerpo);
 }
 
 /** Link de cotizacion a partir de una lista de productos del formulario. */

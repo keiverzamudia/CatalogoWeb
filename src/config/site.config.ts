@@ -67,7 +67,7 @@ export const SITE: ConfigSitio = {
   unidadNegocio: 'Lubricantes y Repuestos',
   eslogan: 'Energía • Lubricantes • Transporte de Carga',
   evento: 'EXPO',
-  eventoAnio: '2025', // mock: confirmar año real del evento
+  eventoAnio: '2026', // mock: confirmar año real del evento
   ubicacion: 'Barquisimeto, Estado Lara, Venezuela',
   direccion: 'Barquisimeto, Estado Lara, Venezuela. Despachos a nivel nacional.',
   email: 'ventassanluis.sl@gmail.com.ve', // mock: dato tomado del sitio institucional
@@ -92,10 +92,10 @@ export const SITE: ConfigSitio = {
       icono: 'instagram',
     },
     {
-      id: 'instagram-grupo',
+      id: 'instagram-hidrocarburos',
       label: 'Instagram',
-      sublabel: '@sanluishidrocarburo', // PROVISIONAL: handle del mockup de Stitch
-      href: 'https://www.instagram.com/sanluishidrocarburo/',
+      sublabel: '@sanluishidrocarburos', // PROVISIONAL: handle del mockup de Stitch
+      href: 'https://www.instagram.com/sanluishidrocarburos?stkn=MW5wcWx6ZjNkbXAwMw==',
       iconoClases: 'bg-gradient-to-br from-purple-600 via-pink-600 to-amber-500',
       icono: 'instagram',
     },
@@ -105,7 +105,7 @@ export const SITE: ConfigSitio = {
     { valor: '48 HORAS', label: 'Despacho' },
     { valor: '100% OFICIAL', label: 'Motul • PDV' },
   ],
-  copyrightAnio: '2025', // mock: se alinea con SITE.eventoAnio en produccion
+  copyrightAnio: '2026', // mock: se alinea con SITE.eventoAnio en produccion
 };
 
 /** Marca del administrador. Visible solo en /admin. */
@@ -129,7 +129,7 @@ export const FOOTER = {
 export const DATOS_PROVISIONALES = [
   'SITE.eventoAnio',
   'SITE.email',
-  'SITE.redes[2].href — 2do Instagram (@gruposanluis.ve)',
+  'SITE.redes[2].href — 2do Instagram (@sanluishidrocarburos)',
   'SITE.hero[0].valor',
   'WHATSAPP_E164 — cargado por el cliente: verificar digitos antes de imprimir el QR',
 ] as const;

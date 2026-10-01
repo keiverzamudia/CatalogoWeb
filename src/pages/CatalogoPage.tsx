@@ -4,6 +4,7 @@ import { registrarVisita } from '../lib/panel.api';
 import { urlContacto } from '../lib/whatsapp';
 import type { Producto } from '../data/tipos';
 import { BannerDistribuidor } from '../components/BannerDistribuidor';
+import { BotonSubir } from '../components/BotonSubir';
 import { CanalesOficiales } from '../components/CanalesOficiales';
 import { CatalogSection } from '../components/CatalogSection';
 import { ContactoSede } from '../components/ContactoSede';
@@ -67,6 +68,9 @@ export function CatalogoPage() {
       </div>
 
       <ProductSheet producto={seleccionado} onCerrar={() => setSeleccionado(null)} />
+
+      {/* Boton de subir: aparece recien despues de 500 px de scroll. */}
+      <BotonSubir />
 
       {/* Boton flotante de WhatsApp: el Stitch dejo el hueco marcado
           "Floating WhatsApp Widget". Se implementa como pastilla fija abajo

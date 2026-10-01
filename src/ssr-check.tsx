@@ -81,6 +81,20 @@ async function main() {
     console.log(`  canales ${nombre} -> ${ok ? 'si' : 'NO'}`);
   }
 
+  // Acceso al formulario y boton de subir: sin esto, los contactos del panel
+  // se quedan en cero porque nadie encuentra donde dejar sus datos.
+  const contacto: [string, boolean][] = [
+    ['ancla #contacto presente', html.includes('id="contacto"')],
+    ['CTA al formulario', html.includes('Déjanos tu contacto') || html.includes('Dejanos tu contacto')],
+    ['boton subir arriba', html.includes('Subir al inicio de la pagina')],
+    ['formulario con su boton', html.includes('Enviar y escribir por WhatsApp')],
+    ['aviso de solo un dato', html.includes('Solo necesitas dejar un dato')],
+  ];
+  for (const [nombre, ok] of contacto) {
+    if (!ok) fallos++;
+    console.log(`  contacto ${nombre} -> ${ok ? 'si' : 'NO'}`);
+  }
+
   console.log(fallos === 0 ? '\nOK: sin fallos' : `\nFALLOS: ${fallos}`);
   if (fallos > 0) process.exitCode = 1;
 }

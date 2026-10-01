@@ -6,7 +6,7 @@ import { Icono } from './ui/Icono';
 /** Card de contacto: sede, email y formulario voluntario de cotizacion. */
 export function ContactoSede({ productosSeleccionados = [] }: { productosSeleccionados?: string[] }) {
   return (
-    <section className="px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8" id="contacto">
+    <section className="px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8 scroll-mt-4" id="contacto">
       <div className="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-sm max-w-3xl">
         <div className="flex items-center space-x-2.5 mb-3">
           <div className="w-8 h-8 rounded-lg bg-brand-navy flex items-center justify-center text-brand-lime text-xs">
