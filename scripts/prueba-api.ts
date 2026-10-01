@@ -9,9 +9,9 @@ import { createServer } from 'node:http';
 process.env.PANEL_CLAVE ||= 'demo-123';
 
 const rutas: Record<string, () => Promise<{ default: Function }>> = {
-  '/api/visita': () => import('../api/visita'),
-  '/api/contacto': () => import('../api/contacto'),
-  '/api/panel': () => import('../api/panel'),
+  '/api/visita': () => import('../api/visita.js'),
+  '/api/contacto': () => import('../api/contacto.js'),
+  '/api/panel': () => import('../api/panel.js'),
 };
 
 const server = createServer(async (req, res) => {

@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { cabecera, coincide, json } from '../shared/http';
-import { leerPanel } from '../shared/panel';
+import { cabecera, coincide, json } from '../shared/http.js';
+import { leerPanel } from '../shared/panel.js';
 
 /**
  * GET /api/panel

@@ -3,6 +3,7 @@ import { SITE } from '../../config/site.config';
 import type { Contacto, DatosPanel } from '../../../shared/panel';
 import { cargarPanel, claveGuardada, guardarClave, olvidarClave } from '../../lib/panel.api';
 import { exportarExcel, exportarPdf, type Columna } from './exportar';
+import { PanelErrorBoundary } from './PanelErrorBoundary';
 
 /* ============================================================================
    PANEL /admin — CUADRO DE MANDO INTERNO
@@ -130,6 +131,14 @@ function sello(): string {
 /* -- pantalla ------------------------------------------------------------- */
 
 export function AdminApp() {
+  return (
+    <PanelErrorBoundary>
+      <Panel />
+    </PanelErrorBoundary>
+  );
+}
+
+function Panel() {
   const [entrada, setEntrada] = useState('');
   const [clave, setClave] = useState('');
   const [recarga, setRecarga] = useState(0);

@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { cuerpoJson, json, mismoOrigen } from '../shared/http';
-import { guardarContacto } from '../shared/panel';
+import { cuerpoJson, json, mismoOrigen } from '../shared/http.js';
+import { guardarContacto } from '../shared/panel.js';
 
 /**
  * POST /api/contacto
