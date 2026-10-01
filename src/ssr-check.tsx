@@ -6,6 +6,8 @@
  * de diagnostico.
  */
 import { renderToStaticMarkup } from 'react-dom/server';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import { CATALOGOS_OFICIALES } from './config/catalog.config';
 import { CatalogoLocal } from './lib/catalogo.repository';
 import { conteoPorCategoria } from './lib/catalogo.repository';
@@ -101,20 +103,26 @@ async function main() {
   // OJO: las rutas de los PDF NO estan en el HTML. Los botones guardan el
   // objeto del catalogo y abren el visor por onClick, asi que `archivo` vive
   // en el estado de React, no en el markup. Aqui se comprueba el markup y,
-  // aparte, que el dato exista en la configuracion.
+  // aparte, que el dato exista y que el archivo este realmente en public/.
   const rutasPdfOk =
     CATALOGOS_OFICIALES.length === 2 &&
     CATALOGOS_OFICIALES.every((c) => c.archivo.startsWith('/catalogos/') && c.archivo.endsWith('.pdf'));
+
+  // Que el PDF exista de verdad evita el fallo mas tonto posible: un nombre
+  // mal escrito deja el boton abriendo un 404 y nadie se entera.
+  const archivosPdfOk = CATALOGOS_OFICIALES.every((c) =>
+    existsSync(path.join(process.cwd(), 'public', c.archivo)),
+  );
 
   const pdf: [string, boolean][] = [
     ['seccion de catalogos', html.includes('Catálogos oficiales')],
     ['2 botones de catalogo', (html.match(/Ver catálogo/g) ?? []).length === 2],
     ['rutas PDF en config', rutasPdfOk],
+    ['2 PDF presentes en public/', archivosPdfOk],
     ['botones son <button>', (html.match(/<button type="button"/g) ?? []).length >= 2],
     ['catalogo de productos OCULTO', !html.includes('Catálogo en Exhibición') && !html.includes('Buscar lubricante')],
     ['banner Motul retirado', !html.includes('Distribuidor Autorizado Motul')],
-    ['unidades de negocio', html.includes('unidades de negocio') && html.includes('San Luis Transporte')],
-  ];
+    ['unidades de negocio', html.includes('unidades de negocio') && html.includes('San Luis Transporte')],  ];
   for (const [nombre, ok] of pdf) {
     if (!ok) fallos++;
     console.log(`  pdf ${nombre} -> ${ok ? 'si' : 'NO'}`);

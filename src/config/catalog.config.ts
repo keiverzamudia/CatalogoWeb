@@ -175,21 +175,22 @@ export interface CatalogoOficial {
 
 /**
  * Los PDF se sirven desde `public/catalogos/`. El nombre de `archivo` debe
- * coincidir EXACTAMENTE con el archivo real (mayusculas y guiones incluidos).
+ * coincidir EXACTAMENTE con el archivo real (mayusculas y guiones incluidos):
+ * un nombre mal escrito da un 404 silencioso.
  */
 export const CATALOGOS_OFICIALES: CatalogoOficial[] = [
   {
     id: 'lubricantes',
-    titulo: 'Catálogo San Luis Lubricantes',
+    titulo: 'Catálogo Lubricantes San Luis',
     sub: 'Lubricantes, filtros y mantenimiento',
-    archivo: '/catalogos/SAN-LUIS-LUBRICANTES.pdf',
+    archivo: '/catalogos/Lubricantes_San_Luis.pdf',
     cta: 'Ver catálogo',
   },
   {
-    id: 'transporte',
-    titulo: 'Catálogo San Luis Transporte',
-    sub: 'Unidades, carga y repuestos',
-    archivo: '/catalogos/SAN-LUIS-TRANSPORTE.pdf',
+    id: 'suministros',
+    titulo: 'Catálogo San Luis Suministros',
+    sub: 'Unidades, carga y suministros',
+    archivo: '/catalogos/San_Luis_Suministros.pdf',
     cta: 'Ver catálogo',
   },
 ];
